@@ -1,0 +1,41 @@
+{
+  "name": "preact-packer-cli",
+  "version": "0.0.1",
+  "description": "Preact 组件Pack打包命令行工具",
+  "main": "./dist/cmd.js",
+  "bin": {
+    "preact-packer-cli": "./dist/cmd.js"
+  },
+  "scripts": {
+    "build": "rm -rf dist/ && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "packer",
+    "cli",
+    "Preact"
+  ],
+  "author": "GadgetSheng",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^8.2.0",
+    "cssnano": "^5.0.8",
+    "del": "^6.0.0",
+    "mini-css-extract-plugin": "^2.3.0",
+    "optimize-css-assets-webpack-plugin": "^6.0.1",
+    "webpack": "^4.46.0",
+    "webpack-bundle-analyzer": "^4.4.2"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.1.1",
+    "@types/webpack": "^5.28.0",
+    "preact": "^10.5.14",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.4.3"
+  },
+  "peerDependencies": {
+    "preact": "*",
+    "react-dom": "*"
+  }
+}
