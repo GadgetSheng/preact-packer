@@ -1,42 +1,44 @@
-const path = require('path');
-const fs = require('fs');
-const cssnano = require('cssnano');
-const BundleAnalyzer = require('webpack-bundle-analyzer');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-
-function getMode(webpackOption: any) {
+"use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+var path = require('path');
+var fs = require('fs');
+var cssnano = require('cssnano');
+var BundleAnalyzer = require('webpack-bundle-analyzer');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+function getMode(webpackOption) {
     return webpackOption && webpackOption.debug ? 'development' : 'production';
 }
-
-function containsFile(directory: string, file: string) {
-    const filePath = path.resolve(directory, file);
+function containsFile(directory, file) {
+    var filePath = path.resolve(directory, file);
     return fs.existsSync(filePath);
 }
-
 function getPackageJson() {
-    const cwd = process.cwd();
-    const pkgJSONPath = path.resolve(cwd, './package.json');
-    const pkgJson = require(pkgJSONPath);
+    var cwd = process.cwd();
+    var pkgJSONPath = path.resolve(cwd, './package.json');
+    var pkgJson = require(pkgJSONPath);
     return pkgJson;
 }
-
-function getLibName(webpackOption: any) {
+function getLibName(webpackOption) {
     if (webpackOption && webpackOption.libName) {
         return webpackOption.libName;
     }
-
-    const pkgJson = getPackageJson();
-    let libName = pkgJson.library;
-
+    var pkgJson = getPackageJson();
+    var libName = pkgJson.library;
     if (!libName) {
         libName = 'Comp';
     }
-
     return libName;
 }
-
-function getOutputConfig(webpackOption: any) {
+function getOutputConfig(webpackOption) {
     return {
         library: getLibName(webpackOption),
         path: path.resolve(process.cwd(), webpackOption.output || 'dist'),
@@ -45,14 +47,12 @@ function getOutputConfig(webpackOption: any) {
         libraryExport: 'default'
     };
 }
-
-function getAllLoaders(mode: string) {
-    let configFilePath = path.resolve(process.cwd(), 'tsconfig.json');
+function getAllLoaders(mode) {
+    var configFilePath = path.resolve(process.cwd(), 'tsconfig.json');
     if (!fs.existsSync(configFilePath)) {
         configFilePath = path.resolve(__dirname, '../tsconfig.json');
     }
-
-    const tsLoader = {
+    var tsLoader = {
         test: /\.tsx?$/,
         use: [
             {
@@ -64,48 +64,41 @@ function getAllLoaders(mode: string) {
             }
         ]
     };
-    const cwd = process.cwd();
-    const babelRoots = ['babel.config.js', 'babel.config.cjs', 'babel.config.mjs', 'babel.config.json'];
-    const babelRCFile = ['.babelrc.json', '.babelrc'];
-    const containsRootFile = babelRoots.some(fileName => containsFile(cwd, fileName));
-    const containsRCFile = babelRCFile.some(fileName => containsFile(cwd, fileName));
-
-    const rootMode = containsRootFile ? 'upward' : 'root';
-    const babelrc = containsRCFile;
-    let configFile;
-
+    var cwd = process.cwd();
+    var babelRoots = ['babel.config.js', 'babel.config.cjs', 'babel.config.mjs', 'babel.config.json'];
+    var babelRCFile = ['.babelrc.json', '.babelrc'];
+    var containsRootFile = babelRoots.some(function (fileName) { return containsFile(cwd, fileName); });
+    var containsRCFile = babelRCFile.some(function (fileName) { return containsFile(cwd, fileName); });
+    var rootMode = containsRootFile ? 'upward' : 'root';
+    var babelrc = containsRCFile;
+    var configFile;
     if (rootMode === 'root' && !babelrc) {
         configFile = path.resolve(__dirname, '../.babelrc.js');
     }
-
     console.log('use babel file by mode', {
-        rootMode,
-        babelrc,
-        configFile
+        rootMode: rootMode,
+        babelrc: babelrc,
+        configFile: configFile
     });
-
-    const babelLoader = {
+    var babelLoader = {
         test: /\.(js|jsx)$/,
         use: [
             {
                 loader: 'babel-loader',
                 options: {
-                    rootMode,
-                    babelrc,
-                    configFile
+                    rootMode: rootMode,
+                    babelrc: babelrc,
+                    configFile: configFile
                 }
             }
         ]
     };
-    const isDevMode = mode === 'development';
-
-    const cssLoaders = [
+    var isDevMode = mode === 'development';
+    var cssLoaders = [
         MiniCssExtractPlugin.loader,
         'css-loader'
     ];
-
-    const postCSSLoaderProcess = [
-        ...cssLoaders,
+    var postCSSLoaderProcess = __spreadArray(__spreadArray([], cssLoaders, true), [
         {
             loader: 'postcss-loader',
             options: {
@@ -121,38 +114,32 @@ function getAllLoaders(mode: string) {
                 }
             }
         }
-    ];
-
-    const styleLoaders = [
+    ], false);
+    var styleLoaders = [
         {
             test: /\.css$/,
             use: cssLoaders
         },
         {
             test: /\.s[c|a]ss$/,
-            use: [
-                ...postCSSLoaderProcess,
+            use: __spreadArray(__spreadArray([], postCSSLoaderProcess, true), [
                 'sass-loader'
-            ]
+            ], false)
         },
         {
             test: /\.less/,
-            use: [
-                ...postCSSLoaderProcess,
+            use: __spreadArray(__spreadArray([], postCSSLoaderProcess, true), [
                 'less-loader'
-            ]
+            ], false)
         }
     ];
-    return [
+    return __spreadArray([
         tsLoader,
-        babelLoader,
-        ...styleLoaders
-    ];
+        babelLoader
+    ], styleLoaders, true);
 }
-
-function getAllPlugins(mode: string) {
-    const plugins = [];
-
+function getAllPlugins(mode) {
+    var plugins = [];
     if (mode === 'production') {
         plugins.push(new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.css$/g,
@@ -172,18 +159,15 @@ function getAllPlugins(mode: string) {
             canPrint: true
         }));
     }
-
     return plugins;
 }
-
-function getPlugins(webpackOption: any) {
-    const mode = getMode(webpackOption);
-    const plugins = [
+function getPlugins(webpackOption) {
+    var mode = getMode(webpackOption);
+    var plugins = __spreadArray([
         new MiniCssExtractPlugin({
             filename: 'css/[name].preact.css'
-        }),
-        ...getAllPlugins(mode)
-    ];
+        })
+    ], getAllPlugins(mode), true);
     if (mode === 'production') {
         plugins.push(new BundleAnalyzer.BundleAnalyzerPlugin({
             analyzerMode: 'static',
@@ -191,26 +175,20 @@ function getPlugins(webpackOption: any) {
             reportFilename: path.resolve(process.cwd(), './reports/preactReport.html')
         }));
     }
-
     return plugins;
 }
-
-function genConfig(webpackOption: any) {
-    const { exclude } = webpackOption;
-    const mode = getMode(webpackOption);
-    const cfg: any = {
-        mode,
+function genConfig(webpackOption) {
+    var exclude = webpackOption.exclude;
+    var mode = getMode(webpackOption);
+    var cfg = {
+        mode: mode,
         output: Object.assign(getOutputConfig(webpackOption), {
-            filename: `${webpackOption.file || 'bundle'}.preact.js`
+            filename: (webpackOption.file || 'bundle') + ".preact.js"
         }),
         module: {
-            rules: [
-                ...getAllLoaders(mode)
-            ]
+            rules: __spreadArray([], getAllLoaders(mode), true)
         },
-        plugins: [
-            ...getPlugins(webpackOption)
-        ],
+        plugins: __spreadArray([], getPlugins(webpackOption), true),
         resolve: {
             extensions: ['.wasm', '.mjs', '.js', '.json', '.ts', '.tsx'],
             alias: {
@@ -221,7 +199,6 @@ function genConfig(webpackOption: any) {
             }
         }
     };
-
     if (exclude) {
         cfg.externals = [
             {
@@ -230,8 +207,6 @@ function genConfig(webpackOption: any) {
             }
         ];
     }
-
     return cfg;
 }
-
 module.exports = genConfig;

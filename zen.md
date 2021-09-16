@@ -15,3 +15,10 @@ zen.md 表示创建过程的操作目录
    4. **sourceMap=false**,**declaration=false**
    5. **outDir=./dist**,removeComments=false
    6. 外层增加**include=src**
+
+* 分配执行权限
+`chmod +x cmd.js`
+* 设置环境变量 - link可执行脚本到 环境变量
+`ln build/cmd.js /usr/local/bin/preact-packer`
+
+处理style-loader 注意webpack版本使用@4 所以对应css 相关loader都需要降级

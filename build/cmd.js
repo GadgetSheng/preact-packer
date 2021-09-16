@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-
-const { program } = require('commander');
-const { version } = require('../package.json');
-const { doBuildAction } = require("./build");
-
+"use strict";
+var program = require('commander').program;
+var version = require('../package.json').version;
+var doBuildAction = require("./build").doBuildAction;
 program.version(version)
     .command('build [entry]')
     .description('build pack for preact')
@@ -12,7 +11,5 @@ program.version(version)
     .option('-d --debug', 'build pack as debug mode')
     .option('-ex --exclude', 'exclude the preact lib from bundle')
     .action(doBuildAction);
-
 // TODO commander.command('test [test-dir]')
-
 program.parse(process.argv);

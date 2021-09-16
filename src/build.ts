@@ -115,8 +115,8 @@ async function buildPreact(entryPath: string, webpackOption: {}) {
     return webpackRet;
 }
 
-export async function doBuildAction(entry: string, cmdOption: any) {
-    const opts = cmdOption.opts();
+async function doBuildAction(name: string, options: any): Promise<void> {
+    // console.log(chalk.cyan(`options ${JSON.stringify(name)}, ${JSON.stringify(options)} `));
     try {
         await checkEnv();
     } catch (error) {
@@ -127,8 +127,8 @@ export async function doBuildAction(entry: string, cmdOption: any) {
     const cwd: string = process.cwd();
     let entryFilePath: string;
 
-    if (entry) {
-        entryFilePath = path.resolve(cwd, entry);
+    if (name) {
+        entryFilePath = path.resolve(cwd, name);
     } else {
         entryFilePath = getMainPathFromPkgJson(cwd);
     }
@@ -146,7 +146,7 @@ export async function doBuildAction(entry: string, cmdOption: any) {
         }
     }
 
-    const { preactOnly, reactOnly, ...webpackOption } = cmdOption;
+    const { preactOnly, reactOnly, ...webpackOption } = options;
     const bundleNames = [];
     bundleNames.push('preact.bundle');
 
@@ -162,4 +162,8 @@ export async function doBuildAction(entry: string, cmdOption: any) {
             console.error(chalk.red('build package failed'), e);
         }
     }
+}
+
+export {
+    doBuildAction
 }

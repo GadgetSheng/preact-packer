@@ -1,2 +1,5 @@
 node_modules
 dist
+
+demo/node_modules
+tmpEntryFile.jsx
